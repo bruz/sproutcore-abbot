@@ -1,0 +1,13 @@
+{!
+!}
+[
+  <for each="thisProperty" in="data">
+    { "guid": "{+(thisProperty.alias)+}", 
+      "title": "{+(thisProperty.name)+} ({+(thisProperty.memberOf)+})",
+      "name": "{+(thisProperty.name)+}",
+      "anchor": "{+(thisProperty.name)+}",
+      "memberOf": "{+(thisProperty.memberOf)+}"
+    }
+    <if test="!$thisProperty_last">,</if>
+  </for>
+]

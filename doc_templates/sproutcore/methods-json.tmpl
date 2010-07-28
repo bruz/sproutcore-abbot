@@ -1,0 +1,13 @@
+{!
+!}
+[
+  <for each="thisMethod" in="data">
+    { "guid": "{+(thisMethod.alias)+}", 
+      "title": "{+(thisMethod.name)+} ({+(thisMethod.memberOf)+})",
+      "name": "{+(thisMethod.name)+}",
+      "anchor": "{+(thisMethod.alias)+}",
+      "memberOf": "{+(thisMethod.memberOf)+}"
+    }
+    <if test="!$thisMethod_last">,</if>
+  </for>
+]

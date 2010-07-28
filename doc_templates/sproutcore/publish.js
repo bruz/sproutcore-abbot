@@ -201,7 +201,9 @@ function publish(symbolSet) {
   // filters
   function hasNoParent($) {return ($.memberOf == "")}
   function isaFile($) {return ($.is("FILE"))}
-  function isaClass($) {return ($.is("CONSTRUCTOR") || $.isNamespace)}
+  function isaClass($) {return ($.is("CONSTRUCTOR") || $.is("GLOBAL") || $.isNamespace)}
+  function isaMethod($) {return ($.is("FUNCTION") )}
+  function isaProperty($) {return ($.is("OBJECT") && !$.isNamespace)}
   
   var symbols = symbolSet.toArray();
   
@@ -229,6 +231,34 @@ function publish(symbolSet) {
   Link.base = "";
   publish.classesIndex = classesTemplate.process(classes);
   
+  // Methods
+  var methods = symbols.filter(isaMethod).sort(makeSortby("alias"));
+
+  try {
+    var methodsindexTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"methods-json.tmpl");
+  }
+  catch(e) { print(e.message); quit(); }
+  
+  var methodsIndex = methodsindexTemplate.process(methods);
+  // IO.saveFile(publish.conf.outDir, "index"+publish.conf.ext, methodsIndex);
+  IO.saveFile(publish.conf.outDir, "methods.json", methodsIndex);
+  methodsindexTemplate = methodsIndex = null;
+  // End Methods
+
+  // Properties
+  var properties = symbols.filter(isaProperty).sort(makeSortby("alias"));
+
+  try {
+    var propertiesindexTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"properties-json.tmpl");
+  }
+  catch(e) { print(e.message); quit(); }
+  
+  var propertiesIndex = propertiesindexTemplate.process(properties);
+  // IO.saveFile(publish.conf.outDir, "index"+publish.conf.ext, propertiesIndex);
+  IO.saveFile(publish.conf.outDir, "properties.json", propertiesIndex);
+  propertiesindexTemplate = propertiesIndex = null;
+  // End Properties
+
   try {
     var classesindexTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"classes-json.tmpl");
   }
@@ -246,8 +276,8 @@ function publish(symbolSet) {
   
   var classesIndex = classesindexTemplate.process(classes);
   IO.saveFile(publish.conf.outDir, "index"+publish.conf.ext, classesIndex);
-  classesindexTemplate = classesIndex = classes = null;
-  
+  classesindexTemplate = classesIndex = null;
+
   try {
     var fileindexTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"allfiles.tmpl");
   }

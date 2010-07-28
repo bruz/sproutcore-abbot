@@ -20,36 +20,35 @@ function groupName(path) {
 };
 
 function getSymbols(thisClass) {
-  var ret = [thisClass.alias.toLowerCase()] ;
+  var ret = [] ;
   var len = thisClass.properties.length ;
   
   while (--len>=0) {
-    ret.push(thisClass.properties[len].alias.toLowerCase()) ;
+    ret.push(thisClass.properties[len].alias) ;
   }
   
   return ret.join(' ') ;
 };
 
 !}
-{ records: [
+[
   <for each="thisClass" in="data">
-    <if test="groupName(thisClass.srcFile) !== undefined">
-      { "type": "Doc", 
-        "guid": "{+(thisClass.alias)+}", 
-        <if test="!(thisClass.alias == 'SC')">
-          "title": "{+(thisClass.alias)+}",
-        </if>
-        <if test="(thisClass.alias == 'SC')">
-          "title": "SproutCore (SC)",
-        </if>
-        "url": "{+(thisClass.alias)+}.html",
-        <if test="!(thisClass.alias == 'SC')">
-          "group": "{+groupName(thisClass.srcFile)+}",
-        </if>
-        "symbols": "{+getSymbols(thisClass)+}",
-        "path": "{+thisClass.srcFile+}"
-      },
-    </if>
+    { "type": "Doc", 
+      "guid": "{+(thisClass.alias)+}", 
+      "name": "{+(thisClass.alias)+}", 
+      <if test="!(thisClass.alias == 'SC')">
+        "title": "{+(thisClass.alias)+}",
+      </if>
+      <if test="(thisClass.alias == 'SC')">
+        "title": "SproutCore (SC)",
+      </if>
+      "url": "{+(thisClass.alias)+}.html",
+      <if test="!(thisClass.alias == 'SC')">
+        "group": "{+groupName(thisClass.srcFile)+}",
+      </if>
+      "symbols": "{+getSymbols(thisClass)+}",
+      "path": "{+thisClass.srcFile+}"
+    }
+    <if test="!$thisClass_last">,</if>
   </for>
-  ]
-}
+]
